@@ -15,10 +15,11 @@ const OasisTechSolutions = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
 
   const handleFormChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   const handleSubmit = async () => {
