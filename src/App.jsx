@@ -21,25 +21,48 @@ const OasisTechSolutions = () => {
     });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!formData.name || !formData.email || !formData.phone || !formData.message) {
       alert('Please fill in all required fields');
       return;
     }
-    // In production, this would send to a backend
-    console.log('Form submitted:', formData);
-    setFormSubmitted(true);
-    setTimeout(() => {
-      setFormSubmitted(false);
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        service: '',
-        message: '',
-        contactMethod: 'either'
+    
+    try {
+      const response = await fetch('https://formspree.io/f/xeovlbrr', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          service: formData.service,
+          message: formData.message,
+          contactMethod: formData.contactMethod,
+          _replyto: formData.email
+        }),
       });
-    }, 5000);
+
+      if (response.ok) {
+        setFormSubmitted(true);
+        setTimeout(() => {
+          setFormSubmitted(false);
+          setFormData({
+            name: '',
+            email: '',
+            phone: '',
+            service: '',
+            message: '',
+            contactMethod: 'either'
+          });
+        }, 5000);
+      } else {
+        alert('There was an error sending your message. Please try again or call directly.');
+      }
+    } catch (error) {
+      alert('There was an error sending your message. Please try again or call directly.');
+    }
   };
 
   const navigateTo = (page) => {
@@ -591,8 +614,8 @@ const OasisTechSolutions = () => {
                 <Mail className="text-lime-600 mt-1" size={20} />
                 <div>
                   <p className="font-semibold text-gray-900">Email</p>
-                  <a href="mailto:carpenter.andreweugene@gmail.com" className="text-lime-600 hover:text-lime-700">
-                    carpenter.andreweugene@gmail.com
+                  <a href="mailto:contact@oasistechsolutions.net" className="text-lime-600 hover:text-lime-700">
+                    contact@oasistechsolutions.net
                   </a>
                 </div>
               </div>
@@ -647,7 +670,7 @@ const OasisTechSolutions = () => {
           <div>
             <img src="/logo.png" alt="Oasis Tech Solutions" className="h-16 lg:h-20 mb-4" />
             <p className="text-sm">760-895-7162</p>
-            <p className="text-sm">carpenter.andreweugene@gmail.com</p>
+            <p className="text-sm">contact@oasistechsolutions.net</p>
           </div>
 
           <div>
