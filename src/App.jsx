@@ -57,19 +57,19 @@ const OasisTechSolutions = () => {
   const Navigation = () => (
     <nav className="bg-white shadow-md sticky top-0 z-50">
       <div className="px-4 lg:px-12 xl:px-16">
-        <div className="flex justify-between items-center h-24 lg:h-32 gap-4">
+        <div className="flex justify-between items-center h-16 lg:h-24 xl:h-32 gap-4">
           {/* Logo - Left */}
           <button onClick={() => navigateTo('home')} className="flex items-center flex-shrink-0">
-            <img src="/logo.png" alt="Oasis Tech Solutions" className="h-20 lg:h-28" />
+            <img src="/logo.png" alt="Oasis Tech Solutions" className="h-12 md:h-16 lg:h-20 xl:h-28" />
           </button>
           
-          {/* Navigation - Center - ALWAYS VISIBLE */}
-          <div className="flex gap-3 lg:gap-8">
+          {/* Navigation - Center (Desktop only) */}
+          <div className="hidden md:flex gap-3 lg:gap-8">
             {['home', 'services', 'about', 'contact'].map(page => (
               <button
                 key={page}
                 onClick={() => navigateTo(page)}
-                className={`capitalize font-medium transition-colors text-base lg:text-lg ${
+                className={`capitalize font-medium transition-colors text-sm lg:text-base xl:text-lg ${
                   currentPage === page 
                     ? 'text-lime-600' 
                     : 'text-gray-600 hover:text-lime-500'
@@ -80,14 +80,45 @@ const OasisTechSolutions = () => {
             ))}
           </div>
 
-          {/* Contact Button - Right - ALWAYS VISIBLE */}
-          <div className="flex items-center gap-2 flex-shrink-0">
+          {/* Contact Button - Right (Desktop only) */}
+          <div className="hidden md:flex items-center gap-2 flex-shrink-0">
             <a href="tel:7608957162" className="flex items-center gap-1 lg:gap-2 text-gray-600 hover:text-lime-600 transition-colors">
-              <Phone size={20} className="lg:w-6 lg:h-6" />
-              <span className="font-medium text-base lg:text-lg">760-895-7162</span>
+              <Phone size={16} className="lg:w-5 lg:h-5 xl:w-6 xl:h-6" />
+              <span className="font-medium text-sm lg:text-base xl:text-lg">760-895-7162</span>
             </a>
           </div>
+
+          {/* Mobile Menu Toggle */}
+          <button 
+            className="md:hidden"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden pb-4 border-t border-gray-100">
+            <div className="py-2">
+              {['home', 'services', 'about', 'contact'].map(page => (
+                <button
+                  key={page}
+                  onClick={() => navigateTo(page)}
+                  className="block w-full text-left px-4 py-3 capitalize hover:bg-gray-50 transition-colors"
+                >
+                  {page}
+                </button>
+              ))}
+            </div>
+            <div className="px-4 pt-2 border-t border-gray-100">
+              <a href="tel:7608957162" className="flex items-center gap-2 text-lime-600 font-semibold py-3">
+                <Phone size={18} />
+                <span>760-895-7162</span>
+              </a>
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   );
