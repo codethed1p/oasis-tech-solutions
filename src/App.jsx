@@ -487,7 +487,70 @@ const OasisTechSolutions = () => {
     </div>
   );
 
-  const ContactPage = () => (
+  const ContactPage = () => {
+  const [localFormData, setLocalFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    service: '',
+    message: '',
+    contactMethod: 'either'
+  });
+  const [localFormSubmitted, setLocalFormSubmitted] = useState(false);
+
+  const handleLocalFormChange = (e) => {
+    const { name, value } = e.target;
+    setLocalFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleLocalSubmit = async () => {
+    if (!localFormData.name || !localFormData.email || !localFormData.phone || !localFormData.message) {
+      alert('Please fill in all required fields');
+      return;
+    }
+    
+    try {
+      const response = await fetch('https://formspree.io/f/xeovlbrr', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: localFormData.name,
+          email: localFormData.email,
+          phone: localFormData.phone,
+          service: localFormData.service,
+          message: localFormData.message,
+          contactMethod: localFormData.contactMethod,
+          _replyto: localFormData.email
+        }),
+      });
+
+      if (response.ok) {
+        setLocalFormSubmitted(true);
+        setTimeout(() => {
+          setLocalFormSubmitted(false);
+          setLocalFormData({
+            name: '',
+            email: '',
+            phone: '',
+            service: '',
+            message: '',
+            contactMethod: 'either'
+          });
+        }, 5000);
+      } else {
+        alert('There was an error sending your message. Please try again or call directly.');
+      }
+    } catch (error) {
+      alert('There was an error sending your message. Please try again or call directly.');
+    }
+  };
+
+  return (
     <div className="py-16">
       <div className="max-w-4xl mx-auto px-4">
         <h1 className="text-4xl font-bold mb-4 text-gray-900">Get in Touch</h1>
@@ -496,7 +559,7 @@ const OasisTechSolutions = () => {
         <div className="grid md:grid-cols-2 gap-12">
           <div>
             <h2 className="text-2xl font-bold mb-6 text-gray-900">Send a Message</h2>
-            {formSubmitted ? (
+            {localFormSubmitted ? (
               <div className="bg-green-50 border border-green-200 p-6 rounded-lg">
                 <p className="text-green-800 font-semibold">Thank you for your message!</p>
                 <p className="text-green-700 mt-2">We'll respond within 24 hours, usually much sooner.</p>
@@ -508,8 +571,8 @@ const OasisTechSolutions = () => {
                   <input 
                     type="text" 
                     name="name"
-                    value={formData.name}
-                    onChange={handleFormChange}
+                    value={localFormData.name}
+                    onChange={handleLocalFormChange}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-lime-500 focus:border-transparent"
                   />
                 </div>
@@ -519,9 +582,9 @@ const OasisTechSolutions = () => {
                   <input 
                     type="email" 
                     name="email"
-                    value={formData.email}
-                    onChange={handleFormChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                    value={localFormData.email}
+                    onChange={handleLocalFormChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-lime-500 focus:border-transparent"
                   />
                 </div>
 
@@ -530,9 +593,9 @@ const OasisTechSolutions = () => {
                   <input 
                     type="tel" 
                     name="phone"
-                    value={formData.phone}
-                    onChange={handleFormChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                    value={localFormData.phone}
+                    onChange={handleLocalFormChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-lime-500 focus:border-transparent"
                   />
                 </div>
 
@@ -540,9 +603,9 @@ const OasisTechSolutions = () => {
                   <label className="block text-sm font-semibold mb-2 text-gray-700">Service Needed</label>
                   <select 
                     name="service"
-                    value={formData.service}
-                    onChange={handleFormChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                    value={localFormData.service}
+                    onChange={handleLocalFormChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-lime-500 focus:border-transparent"
                   >
                     <option value="">Select a service</option>
                     <option value="backup">Data Backup</option>
@@ -560,9 +623,9 @@ const OasisTechSolutions = () => {
                   <textarea 
                     name="message"
                     rows="4"
-                    value={formData.message}
-                    onChange={handleFormChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                    value={localFormData.message}
+                    onChange={handleLocalFormChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-lime-500 focus:border-transparent"
                   ></textarea>
                 </div>
 
@@ -575,8 +638,8 @@ const OasisTechSolutions = () => {
                           type="radio" 
                           name="contactMethod"
                           value={method}
-                          checked={formData.contactMethod === method}
-                          onChange={handleFormChange}
+                          checked={localFormData.contactMethod === method}
+                          onChange={handleLocalFormChange}
                           className="mr-2"
                         />
                         <span className="capitalize text-gray-700">{method}</span>
@@ -586,7 +649,8 @@ const OasisTechSolutions = () => {
                 </div>
 
                 <button 
-                  onClick={handleSubmit}
+                  type="button"
+                  onClick={handleLocalSubmit}
                   className="w-full bg-lime-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-lime-700 transition-colors"
                 >
                   Send Message
@@ -599,11 +663,12 @@ const OasisTechSolutions = () => {
             )}
           </div>
 
+          {/* Rest of ContactPage remains the same */}
           <div>
             <h2 className="text-2xl font-bold mb-6 text-gray-900">Contact Information</h2>
             
             <div className="space-y-4 mb-8">
-                              <div className="flex items-start gap-3">
+              <div className="flex items-start gap-3">
                 <Phone className="text-lime-600 mt-1" size={20} />
                 <div>
                   <p className="font-semibold text-gray-900">Phone</p>
@@ -663,6 +728,7 @@ const OasisTechSolutions = () => {
       </div>
     </div>
   );
+};
 
   const Footer = () => (
     <footer className="bg-gray-900 text-gray-300 py-12">
